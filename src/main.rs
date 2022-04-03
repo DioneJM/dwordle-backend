@@ -1,9 +1,5 @@
-use crate::configuration::get_configuration;
-use crate::startup::Application;
-
-mod startup;
-mod configuration;
-mod routes;
+use dwordle_backend::configuration::get_configuration;
+use dwordle_backend::startup::Application;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()>{
