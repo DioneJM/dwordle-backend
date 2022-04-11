@@ -43,6 +43,7 @@ pub async fn run(
     let server = HttpServer::new(move || {
         App::new()
             .route("/health", web::get().to(routes::health_check::health_check))
+            .route("/validate", web::post().to(routes::validation::validate_word))
             // .app_data(connection.clone())
     })
         .listen(listener)?
