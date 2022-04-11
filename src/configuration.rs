@@ -1,8 +1,10 @@
+use actix_web::error::ErrorUpgradeRequired;
 use secrecy::{
     Secret,
     ExposeSecret
 };
 use serde_aux::field_attributes::deserialize_number_from_string;
+use sqlx::postgres::{PgConnectOptions, PgSslMode};
 
 pub enum Environment {
     Local,
@@ -53,6 +55,28 @@ pub struct DatabaseSettings {
     pub host: String,
     pub database_name: String,
     pub require_ssl: bool
+}
+
+impl DatabaseSettings {
+    pub fn with_db(&self) -> PgConnectOptions {
+        let mut options = self.with_db().database(&self.database_name);
+        options
+    }
+
+    pub fn without_db(&self) -> PgConnectOptions {
+        let ssl_mode = if self.require_ssl {
+            PgSslMode::Require
+        } else {
+            PgSslMode::Prefer
+        };
+
+        PgConnectOptions::new()
+            .host(&self.host)
+            .username(&self.username)
+            .password(&self.password.expose_secret())
+            .port(self.port)
+            .ssl_mode(ssl_mode)
+    }
 }
 
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
