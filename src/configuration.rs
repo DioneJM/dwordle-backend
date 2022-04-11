@@ -1,10 +1,11 @@
-use actix_web::error::ErrorUpgradeRequired;
 use secrecy::{
     Secret,
     ExposeSecret
 };
 use serde_aux::field_attributes::deserialize_number_from_string;
+use sqlx::ConnectOptions;
 use sqlx::postgres::{PgConnectOptions, PgSslMode};
+use tracing::log::LevelFilter;
 
 pub enum Environment {
     Local,
@@ -59,7 +60,8 @@ pub struct DatabaseSettings {
 
 impl DatabaseSettings {
     pub fn with_db(&self) -> PgConnectOptions {
-        let mut options = self.with_db().database(&self.database_name);
+        let mut options = self.without_db().database(&self.database_name);
+        options.log_statements(LevelFilter::Trace);
         options
     }
 

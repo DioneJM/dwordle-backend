@@ -1,0 +1,23 @@
+{
+  "db": "PostgreSQL",
+  "bb542392814aef73c7c97b20e8969be4b7f592c51d81a50b49bc4bb06db2a1db": {
+    "query": "\n        SELECT word\n        FROM words\n        WHERE id = $1;\n        ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "word",
+          "type_info": "Text"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      },
+      "nullable": [
+        false
+      ]
+    }
+  }
+}
