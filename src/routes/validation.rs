@@ -1,6 +1,6 @@
-use actix_web::{HttpResponse, web};
+use actix_web::{Responder, web};
 use actix_web::error::Error;
-use chrono::{DateTime, TimeZone, Utc, Duration};
+use chrono::{DateTime, TimeZone, Utc, Duration, Timelike};
 use sqlx::PgPool;
 use crate::queries::word::get_word_for_date;
 
@@ -11,35 +11,30 @@ pub struct RequestData {
 }
 
 #[derive(serde::Serialize)]
+#[derive(serde::Deserialize)]
 pub struct ResponseData {
     validation_result: ValidationResult,
     date: String
 }
 
 #[derive(serde::Serialize)]
+#[derive(serde::Deserialize)]
 pub enum ValidationResult {
     Correct,
     SomeCorrect(Vec<char>),
     Incorrect
 }
 
-impl From<ValidationResult> for String {
-    fn from(result: ValidationResult) -> Self {
-        match result {
-            ValidationResult::Correct => "correct".to_string(),
-            ValidationResult::SomeCorrect(_) => "some correct".to_string(),
-            ValidationResult::Incorrect => "incorrect".to_string(),
-        }
-    }
-}
-
 pub async fn validate_word(
     request: web::Json<RequestData>,
     db_connection: web::Data<PgPool>
-) -> Result<HttpResponse, Error> {
+) -> Result<impl Responder, Error> {
     let word = request.0.word.to_lowercase();
     let parsed_date = DateTime::parse_from_rfc3339(request.0.date.as_str())
-        .expect("Failed to parse date");
+        .expect("Failed to parse date")
+        .with_hour(0).unwrap()
+        .with_minute(0).unwrap()
+        .with_second(0).unwrap();
 
     let date = Utc.timestamp(parsed_date.timestamp(), 0);
     let word_to_guess = get_word_to_guess_for(
@@ -52,9 +47,11 @@ pub async fn validate_word(
         true => ValidationResult::Correct,
         false => ValidationResult::Incorrect
     };
-    let result: String = result.try_into().expect("failed to parse result");
 
-    Ok(HttpResponse::Ok().body(format!("{}", result)))
+    Ok(web::Json(ResponseData {
+        validation_result: result,
+        date: date.to_string()
+    }))
 }
 
 pub fn get_duration_since_epoch_date(reference_date: DateTime<Utc>) -> Duration {

@@ -1,4 +1,4 @@
-use serde_json::json;
+use serde_json::{json, Value};
 use crate::helpers::spawn_app;
 
 #[tokio::test]
@@ -17,7 +17,14 @@ async fn validate_word_correct() {
         .expect("Failed validating word");
 
     assert!(response.status().is_success());
-    assert_eq!("correct", response.text().await.expect("No text found"))
+    let body: Value = response.json().await.expect("Failed to parse json");
+    assert_eq!(
+        json!({
+            "validation_result": "Correct",
+            "date": "2022-04-13 00:00:00 UTC"
+        }),
+        body
+    )
 }
 
 #[tokio::test]
@@ -36,7 +43,14 @@ async fn validate_word_incorrect() {
         .expect("Failed validating word");
 
     assert!(response.status().is_success());
-    assert_eq!("incorrect", response.text().await.expect("No text found"))
+    let body: Value = response.json().await.expect("Failed to parse json");
+    assert_eq!(
+        json!({
+            "validation_result": "Incorrect",
+            "date": "2022-04-13 00:00:00 UTC"
+        }),
+        body
+    )
 }
 
 #[tokio::test]
@@ -55,5 +69,12 @@ async fn validate_word_some_correct() {
         .expect("Failed validating word");
 
     assert!(response.status().is_success());
-    assert_eq!("some correct", response.text().await.expect("No text found"))
+    let body: Value = response.json().await.expect("Failed to parse json");
+    assert_eq!(
+        json!({
+            "validation_result": "SomeCorrect",
+            "date": "2022-04-13 00:00:00 UTC"
+        }),
+        body
+    )
 }
