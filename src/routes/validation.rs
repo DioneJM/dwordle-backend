@@ -6,9 +6,17 @@ use crate::queries::word::get_word_for_date;
 
 #[derive(serde::Deserialize)]
 pub struct RequestData {
-    word: String
+    pub word: String,
+    pub date: String
 }
 
+#[derive(serde::Serialize)]
+pub struct ResponseData {
+    validation_result: ValidationResult,
+    date: String
+}
+
+#[derive(serde::Serialize)]
 pub enum ValidationResult {
     Correct,
     SomeCorrect(Vec<char>),
@@ -30,9 +38,12 @@ pub async fn validate_word(
     db_connection: web::Data<PgPool>
 ) -> Result<HttpResponse, Error> {
     let word = request.0.word.to_lowercase();
-    let current_date = Utc::today().and_hms(0,0,0);
+    let parsed_date = DateTime::parse_from_rfc3339(request.0.date.as_str())
+        .expect("Failed to parse date");
+
+    let date = Utc.timestamp(parsed_date.timestamp(), 0);
     let word_to_guess = get_word_to_guess_for(
-        current_date,
+        date,
         &db_connection
     )
         .await;

@@ -1,5 +1,4 @@
 use reqwest::Client;
-use uuid::Uuid;
 use dwordle_backend::configuration::get_configuration;
 use dwordle_backend::startup::Application;
 
