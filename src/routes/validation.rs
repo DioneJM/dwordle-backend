@@ -21,7 +21,7 @@ pub struct ResponseData {
 #[derive(serde::Deserialize)]
 pub enum ValidationResult {
     Correct,
-    SomeCorrect(Vec<char>),
+    SomeCorrect,
     Incorrect
 }
 
@@ -45,7 +45,14 @@ pub async fn validate_word(
 
     let result = match word.trim().eq(word_to_guess.as_str()) {
         true => ValidationResult::Correct,
-        false => ValidationResult::Incorrect
+        false => {
+            let some_correct = word.chars().any(|char| word_to_guess.contains(char));
+            if some_correct {
+                ValidationResult::SomeCorrect
+            } else {
+                ValidationResult::Incorrect
+            }
+        }
     };
 
     Ok(web::Json(ResponseData {

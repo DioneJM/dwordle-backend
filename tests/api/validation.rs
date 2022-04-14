@@ -35,7 +35,7 @@ async fn validate_word_incorrect() {
     let response = client
         .post(&format!("{}/validate", &app.address))
         .json(&json!({
-            "word": "wrong",
+            "word": "12345",
             "date": "2022-04-13T23:59:59Z"
         }))
         .send()
