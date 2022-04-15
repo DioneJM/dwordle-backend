@@ -46,7 +46,12 @@ pub async fn validate_word(
     let result = match word.trim().eq(word_to_guess.as_str()) {
         true => ValidationResult::Correct,
         false => {
-            let some_correct = word.chars().any(|char| word_to_guess.contains(char));
+            let shared_letters: String = word
+                .chars()
+                .filter(|char| word_to_guess.contains(&char.to_string()))
+                .collect();
+            let some_correct = shared_letters.len() > 0;
+            println!("shared letters: {}", shared_letters);
             if some_correct {
                 ValidationResult::SomeCorrect
             } else {
