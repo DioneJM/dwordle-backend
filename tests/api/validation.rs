@@ -21,7 +21,35 @@ async fn validate_word_correct() {
     assert_eq!(
         json!({
             "validation_result": "Correct",
-            "date": "2022-04-13 00:00:00 UTC"
+            "date": "2022-04-13 00:00:00 UTC",
+            "letters": [
+                {
+                    "value": "p",
+                    "state": "Correct",
+                    "position": 0
+                },
+                {
+                    "value": "o",
+                    "state": "Correct",
+                    "position": 1
+                },
+                {
+                    "value": "d",
+                    "state": "Correct",
+                    "position": 2
+                },
+                {
+                    "value": "e",
+                    "state": "Correct",
+                    "position": 3
+                },
+                {
+                    "value": "x",
+                    "state": "Correct",
+                    "position": 4
+                },
+
+            ]
         }),
         body
     )
@@ -47,7 +75,35 @@ async fn validate_word_incorrect() {
     assert_eq!(
         json!({
             "validation_result": "Incorrect",
-            "date": "2022-04-13 00:00:00 UTC"
+            "date": "2022-04-13 00:00:00 UTC",
+            "letters": [
+                {
+                    "value": "1",
+                    "state": "NotPresent",
+                    "position": 0
+                },
+                {
+                    "value": "2",
+                    "state": "NotPresent",
+                    "position": 1
+                },
+                {
+                    "value": "3",
+                    "state": "NotPresent",
+                    "position": 2
+                },
+                {
+                    "value": "4",
+                    "state": "NotPresent",
+                    "position": 3
+                },
+                {
+                    "value": "5",
+                    "state": "NotPresent",
+                    "position": 4
+                },
+
+            ]
         }),
         body
     )
@@ -73,7 +129,35 @@ async fn validate_word_some_correct() {
     assert_eq!(
         json!({
             "validation_result": "SomeCorrect",
-            "date": "2022-04-13 00:00:00 UTC"
+            "date": "2022-04-13 00:00:00 UTC",
+            "letters": [
+                {
+                    "value": "p",
+                    "state": "Correct",
+                    "position": 0
+                },
+                {
+                    "value": "e",
+                    "state": "Present",
+                    "position": 1
+                },
+                {
+                    "value": "d",
+                    "state": "Correct",
+                    "position": 2
+                },
+                {
+                    "value": "a",
+                    "state": "NotPresent",
+                    "position": 3
+                },
+                {
+                    "value": "l",
+                    "state": "NotPresent",
+                    "position": 4
+                },
+
+            ]
         }),
         body
     )
