@@ -11,7 +11,6 @@ pub struct RequestData {
 }
 
 #[derive(serde::Serialize)]
-#[derive(serde::Deserialize)]
 pub struct ResponseData {
     validation_result: ValidationResult,
     date: String,
@@ -19,7 +18,6 @@ pub struct ResponseData {
 }
 
 #[derive(serde::Serialize)]
-#[derive(serde::Deserialize)]
 pub enum ValidationResult {
     Correct,
     SomeCorrect,
@@ -35,7 +33,6 @@ pub enum LetterState {
 }
 
 #[derive(serde::Serialize)]
-#[derive(serde::Deserialize)]
 pub struct Letter {
     value: char,
     state: LetterState,
